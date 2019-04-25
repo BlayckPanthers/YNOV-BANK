@@ -26,7 +26,10 @@ public class TransactionController {
 	@Autowired
     private  TransactionDAO transactionRepository ;
 	
-	
+	/**
+	 * Retourne toute les transactions
+	 * @return
+	 */
 	@RequestMapping(value= "/listTransaction", method=RequestMethod.GET)
 	public List<Transaction> listTransaction() {
 		
@@ -34,6 +37,11 @@ public class TransactionController {
 		
 	}
 	
+	/**
+	 * Retourne une transaction par son id ( @param id )
+	 * @param id
+	 * @return
+	 */
 	@RequestMapping(value= "/transById/{id}", method=RequestMethod.GET)
 	public Transaction getTransactonById(@PathVariable long id) {
 		
@@ -41,6 +49,11 @@ public class TransactionController {
 		
 	}
 	
+	/**
+	 * Retourne la liste de transaction reçues et émises d'un compte donné ( @param accountId )
+	 * @param accountId
+	 * @return
+	 */
 	@RequestMapping(value= "/transByAccount/{accountId}", method=RequestMethod.GET)
 	public Map<String,Object> getTransactonByAccount(@PathVariable long accountId) {
 		
@@ -53,6 +66,12 @@ public class TransactionController {
 		return map;	
 	}
 	
+	/**
+	 *  Retourne la liste de transaction en fonction du ( @param type ) pour un compte donné ( @param accountId ) : Received || Sent
+	 * @param type
+	 * @param accountId
+	 * @return
+	 */
 	@RequestMapping(value="/transByType/{type}/{accountId}", method=RequestMethod.GET)
 	public List<Transaction> getTransactionReceivedById (@PathVariable String type,@PathVariable long accountId){
 		
@@ -65,6 +84,10 @@ public class TransactionController {
 		}
 	}
 	
+	/**
+	 * Retourne le nombre de transaction reçues et émises d'un compte ( @param accountId )
+	 * @return
+	 */
 	@RequestMapping(value="/transCount/{accountId}", method=RequestMethod.GET)
 	public Map<String,Integer> getNumberOfTransactionById(@PathVariable long accountId) {
 	
@@ -76,14 +99,25 @@ public class TransactionController {
 		return map;
 	}
 	
+	/**
+	 * Envoie d'une transaction au serveur/BDD
+	 * @param trans
+	 * @return
+	 */
 	@RequestMapping(value="/transfer", method=RequestMethod.POST)
 	public Transaction createTransaction(@RequestBody Transaction trans) {
 		
+		System.out.println("TRANSACTION REçue "+trans);
 		Transaction t = transactionRepository.saveAndFlush(trans);
 		
 		return t;
 	}
 	
+	/**
+	 * Renvoie la liste des transations : entre la date donnée en paramètre jusqu'aujourd'hui
+	 * @param date
+	 * @return
+	 */
 	@RequestMapping(value= "/transByDate/{date}", method=RequestMethod.GET)
 	public List<Transaction> getAllTransactonsByDate(@PathVariable String date) {
 		
@@ -99,6 +133,11 @@ public class TransactionController {
 		return null;
 	}
 	
+	/**
+	 * Renvoie la liste des transactions : 
+	 * entre les dates données en paramètre ( @param dateStart, @param dateEnd ) et en fonction du type ( @param type ): Pending || Terminated
+	 * @return
+	 */
 	@RequestMapping(value= "/transByDate/{type}/{dateStart}/{dateEnd}", method=RequestMethod.GET)
 	public Map<String,Object> getAllTransactonsBetweenDateAndType(@PathVariable String type, @PathVariable String dateStart, @PathVariable String dateEnd) {
 		
@@ -127,6 +166,15 @@ public class TransactionController {
 		return map;
 	}
 	
+	/**
+	 * Renvoie la liste des transactions d'un utilisateur ( @param acountId ): 
+	 * entre les dates données en paramètre ( @param dateStart, @param dateEnd ) et en fonction du type ( @param type @param) : Pending || Terminated
+	 * @param accountId
+	 * @param type
+	 * @param dateStart
+	 * @param dateEnd
+	 * @return
+	 */
 	@RequestMapping(value= "/transByDate/{accountId}/{type}/{dateStart}/{dateEnd}", method=RequestMethod.GET)
 	public Map<String,Object> getAllTransactonsByIdAndTypeBetweenDate(@PathVariable long accountId,@PathVariable String type, @PathVariable String dateStart, @PathVariable String dateEnd) {
 		
